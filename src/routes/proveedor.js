@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const proveedor = require("../model/model_proveedor")
 const database = require('../database');
 //const e = require('express');
+const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
 
 routes.get('/get/', verificaToken, async (req, res) => {
@@ -103,18 +104,5 @@ routes.delete('/del/:idproveedor', verificaToken, async (req, res) => {
         t.rollback();
     }
 })
-
-//Authorization: Bearer <token>
-function verificaToken(req, res, next) {
-    const bearerheader = req.headers['authorization'];
-
-    if (typeof bearerheader !== 'undefined') {
-        const bearertoken = bearerheader.split(" ")[1];
-        req.token = bearertoken;
-        next();
-    } else {
-        return res.send("Error token")
-    }
-}
 
 module.exports = routes;

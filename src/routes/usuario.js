@@ -5,6 +5,7 @@ const usuario = require("../model/model_usuario")
 const sucursal = require("../model/model_sucursal")
 const persona = require("../model/model_persona")
 const database = require('../database')
+const verificaToken = require('../middleware/token_extractor')
 const md5 = require('md5')
 require("dotenv").config()
 
@@ -19,7 +20,7 @@ routes.get('/login/', async (req, res) => {
 
         if (usuario) {
             jwt.sign({ usuario }, process.env.CLAVESECRETA
-                , { expiresIn: '10h' }//Para personalizar el tiempo para expirar
+                , { expiresIn: '12h' }//Para personalizar el tiempo para expirar
                 , (err, token) => {
                     return res.json({
                         token,
@@ -148,17 +149,5 @@ routes.delete('/del/:idusuario', verificaToken, async (req, res) => {
     }
 })
 
-//Authorization: Bearer <token>
-function verificaToken(req, res, next) {
-    const bearerheader = req.headers['authorization'];
-
-    if (typeof bearerheader !== 'undefined') {
-        const bearertoken = bearerheader.split(" ")[1];
-        req.token = bearertoken;
-        next();
-    } else {
-        return res.send("Error token")
-    }
-}
 
 module.exports = routes;

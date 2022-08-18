@@ -6,6 +6,7 @@ const usuario = require("../model/model_usuario")
 const cliente = require("../model/model_cliente")
 //const detventa = require("../model/model_detventa")
 const database = require('../database');
+const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
 
 routes.get('/get/', verificaToken, async (req, res) => {
@@ -139,18 +140,5 @@ routes.delete('/del/:idventa', verificaToken, async (req, res) => {
     }
 
 })
-
-//Authorization: Bearer <token>
-function verificaToken(req, res, next) {
-    const bearerheader = req.headers['authorization'];
-
-    if (typeof bearerheader !== 'undefined') {
-        const bearertoken = bearerheader.split(" ")[1];
-        req.token = bearertoken;
-        next();
-    } else {
-        return res.send("Error token")
-    }
-}
 
 module.exports = routes;

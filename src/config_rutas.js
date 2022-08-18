@@ -14,17 +14,17 @@ const venta = require('./routes/venta');
 const detventa = require('./routes/detventa');
 const preg_seguridad = require('./routes/preg_seguridad');
 
-rutas.use('/api/ciudad',ciudad);
-rutas.use('/api/cliente',cliente);
-rutas.use('/api/sucursal',sucursal);
-rutas.use('/api/persona',persona)
-rutas.use('/api/usuario',usuario)
-rutas.use('/api/proveedor',proveedor)
-rutas.use('/api/producto',producto)
-rutas.use('/api/inventario',inventario)
-rutas.use('/api/detinventario',detinventario)
-rutas.use('/api/venta',venta)
-rutas.use('/api/detventa',detventa)
-rutas.use('/api/pregseguridad',preg_seguridad)
+rutas.use('/sisweb/api/ciudad',ciudad);
+rutas.use('/sisweb/api/cliente',cliente);
+rutas.use('/sisweb/api/sucursal',sucursal);
+rutas.use('/sisweb/api/persona',persona)
+rutas.use('/sisweb/api/usuario',usuario)
+rutas.use('/sisweb/api/proveedor',proveedor)
+rutas.use('/sisweb/api/producto',producto)
+rutas.use('/sisweb/api/inventario',inventario)
+rutas.use('/sisweb/api/detinventario',detinventario)
+rutas.use('/sisweb/api/venta',venta)
+rutas.use('/sisweb/api/detventa',detventa)
+rutas.use('/sisweb/api/pregseguridad',preg_seguridad)
 
 module.exports = rutas;

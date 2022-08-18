@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const det_venta = require("../model/model_detventa")
 const venta = require("../model/model_venta")
 const inventario = require("../model/model_inventario")
-//const detdet_venta = require("../model/model_detdet_venta")
+const verificaToken = require('../middleware/token_extractor')
 const database = require('../database')
 require("dotenv").config()
 
@@ -133,18 +133,5 @@ routes.delete('/del/:iddet_venta',verificaToken, async (req, res) => {
         t.rollback();
     }
 })
-
-//Authorization: Bearer <token>
-function verificaToken(req, res, next) {
-    const bearerheader = req.headers['authorization'];
-
-    if (typeof bearerheader !== 'undefined') {
-        const bearertoken = bearerheader.split(" ")[1];
-        req.token = bearertoken;
-        next();
-    } else{
-        return res.send("Error token")
-    }
-}
 
 module.exports = routes;
