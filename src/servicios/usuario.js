@@ -9,13 +9,15 @@ const verificaToken = require('../middleware/token_extractor')
 const md5 = require('md5')
 require("dotenv").config()
 
-routes.get('/login/', async (req, res) => {
-    const { nick, password } = req.body;
-    //console.log(nick)
-    //console.log(md5(password));
+routes.post('/login/', async (req, res) => {
+    
     //console.log(`select * from usuario where nick = '${nick}' and password = '${md5(password)}'`)
-
     try {
+        console.log(req.body)
+        const { nick, password } = req.body;
+    
+        console.log(md5(password));
+
         const usuario = await database.query(`select * from usuario where nick = '${nick}' and password = '${md5(password)}'`)
 
         if (usuario) {

@@ -1,18 +1,18 @@
 const express = require('express');
 const rutas = express()
 
-const ciudad = require('./routes/ciudad')
-const cliente = require('./routes/cliente')
-const sucursal = require('./routes/sucursal')
-const persona = require('./routes/persona')
-const usuario = require('./routes/usuario');
-const proveedor = require('./routes/proveedor');
-const producto = require('./routes/producto');
-const inventario = require('./routes/inventario');
-const detinventario = require('./routes/detinventario');
-const venta = require('./routes/venta');
-const detventa = require('./routes/detventa');
-const preg_seguridad = require('./routes/preg_seguridad');
+const ciudad = require('./servicios/ciudad')
+const cliente = require('./servicios/cliente')
+const sucursal = require('./servicios/sucursal')
+const persona = require('./servicios/persona')
+const usuario = require('./servicios/usuario');
+const proveedor = require('./servicios/proveedor');
+const producto = require('./servicios/producto');
+const inventario = require('./servicios/inventario');
+const detinventario = require('./servicios/detinventario');
+const venta = require('./servicios/venta');
+const detventa = require('./servicios/detventa');
+const preg_seguridad = require('./servicios/preg_seguridad');
 
 rutas.use('/sisweb/api/ciudad',ciudad);
 rutas.use('/sisweb/api/cliente',cliente);

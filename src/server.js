@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express()
+const cors = require('cors');
 const configrutas =  require('./config_rutas')
 const database=require("./database")
-const port = process.env.PORT||9000;
+const port = process.env.PORT||3001;
 
 const connect=async()=>{
     try{
@@ -15,6 +16,12 @@ const connect=async()=>{
 
 connect()
 
+app.use(cors(
+    {
+        origin: "http://localhost:3000", //servidor que deseas que consuma o (*) en caso que sea acceso libre
+        credentials: true
+    }
+    ));
 app.use(express.urlencoded({extended : false}))
 app.use(express.json())
 app.use(configrutas)
