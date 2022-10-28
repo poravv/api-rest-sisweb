@@ -1,18 +1,15 @@
 const express = require('express');
 const routes = express.Router();
 const jwt = require("jsonwebtoken");
-const producto = require("../model/model_producto")
-const proveedor = require("../model/model_proveedor")
-const database = require('../database')
+const receta = require("../model/model_receta")
+const producto_final = require("../model/model_producto_final")
+const database = require('../database');
+const e = require('express');
 const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
 
-
 routes.get('/get/', verificaToken, async (req, res) => {
-   
-    try{
-    const productos = await producto.findAll({ include: proveedor })
-
+    const recetas = await receta.findAll({ include: producto_final })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
             return res.send("Error: ", err)
@@ -20,18 +17,14 @@ routes.get('/get/', verificaToken, async (req, res) => {
             res.json({
                 mensaje: "successfully",
                 authData: authData,
-                body: productos
+                body: recetas
             })
-        } 
-    }) 
-   }catch(e){
-        return console.log(e) 
-   }
-
+        }
+    })
 })
 
-routes.get('/get/:idproducto', verificaToken, async (req, res) => {
-    const productos = await producto.findByPk(req.params.idproducto, { include: proveedor })
+routes.get('/get/:idreceta', verificaToken, async (req, res) => {
+    const recetas = await receta.findByPk(req.params.idreceta, { include: producto_final })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
             return res.send("Error: ", err)
@@ -39,48 +32,40 @@ routes.get('/get/:idproducto', verificaToken, async (req, res) => {
             res.json({
                 mensaje: "successfully",
                 authData: authData,
-                body: productos
+                body: recetas
             })
         }
     })
 })
 
 routes.post('/post/', verificaToken, async (req, res) => {
-    
-    console.log(req.body);
-    
-    //const t = await database.transaction();
+    const t = await database.transaction();
+
     try {
-        const productos = await producto.create(req.body)
+        const recetas = await receta.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
                 return res.send("Error: ", err)
             } else {
-                //t.commit();
-                res.json({ 
+                t.commit();
+                res.json({
                     mensaje: "Registro almacenado",
                     authData: authData,
-                    body: productos
+                    body: recetas
                 })
             }
         })
     } catch (error) {
-        //t.rollback();
-        return res.send("Error: ", error)
+        res.send("Error: ", error)
+        t.rollback();
     }
 
 })
 
-routes.put('/put/:idproducto', verificaToken, async (req, res) => {
-
-    console.log(req.body)
-
-    
+routes.put('/put/:idreceta', verificaToken, async (req, res) => {
+    const t = await database.transaction();
     try {
-        
-        const t = await database.transaction();
-
-        const productos = await producto.update(req.body, { where: { idproducto: req.params.idproducto }, transaction: t })
+        const recetas = await receta.update(req.body, { where: { idreceta: req.params.idreceta }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
                 return res.send("Error: ", err)
@@ -89,7 +74,7 @@ routes.put('/put/:idproducto', verificaToken, async (req, res) => {
                 res.json({
                     mensaje: "Registro actualizado",
                     authData: authData,
-                    body: productos
+                    body: recetas
                 })
             }
         })
@@ -100,18 +85,19 @@ routes.put('/put/:idproducto', verificaToken, async (req, res) => {
 
 })
 
-routes.delete('/del/:idproducto', verificaToken, async (req, res) => {
+routes.delete('/del/:idreceta', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
-        const productos = await producto.destroy({ where: { idproducto: req.params.idproducto }, transaction: t })
+        const recetas = await receta.destroy({ where: { idreceta: req.params.idreceta }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
                 return res.send("Error: ", err)
             } else {
+                t.commit();
                 res.json({
                     mensaje: "Registro eliminado",
                     authData: authData,
-                    body: productos
+                    body: recetas
                 })
             }
         })
@@ -121,5 +107,6 @@ routes.delete('/del/:idproducto', verificaToken, async (req, res) => {
     }
 
 })
+
 
 module.exports = routes;

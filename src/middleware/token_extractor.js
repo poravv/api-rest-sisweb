@@ -1,12 +1,22 @@
 
 //Authorization: Bearer <token>
-module.exports=(req, res, next) => {
+module.exports = (req, res, next) => {
     const bearerheader = req.headers['authorization'];
     if (typeof bearerheader !== 'undefined') {
-        const bearertoken = bearerheader.split(" ")[1];
-        req.token = bearertoken;
-        next();
+        try {
+            const bearertoken = bearerheader.split(" ")[1];
+            req.token = bearertoken;
+            next();
+        } catch (error) {
+            return res.status(401).json({
+                "error": "true",
+                "mensaje": "Acceso denegado"
+            });
+        }
     } else {
-        return res.send("Error token")
+        return res.status(401).json({
+            "error": "true",
+            "mensaje": "Acceso denegado"
+        });
     }
 }

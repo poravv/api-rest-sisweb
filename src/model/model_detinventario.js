@@ -13,19 +13,19 @@ const det_inventario=sequelize.define("det_inventario",{
     },
     estado:{
         type:DataTypes.STRING,
-        allowNull: false
+        //allowNull: false
     },
     fecha_insert:{
         type:DataTypes.DATE,
-        allowNull:false
+        //allowNull:false
     },
     idinventario:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        //allowNull:false
     },
-    fecha_insert:{
+    fecha_upd:{
         type:DataTypes.DATE,
-        allowNull:false
+        //allowNull:false
     }
 },{
     tableName:"Det_inventario",

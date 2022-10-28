@@ -31,7 +31,6 @@ const producto=database.define("producto",{
     },
     fecha_upd:{
         type:DataTypes.DATE,
-        allowNull:false
     },
     idusuario_upd:{
         type:DataTypes.INTEGER

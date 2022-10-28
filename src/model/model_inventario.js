@@ -12,22 +12,22 @@ const inventario=sequelize.define("inventario",{
     },
     cantidad_total:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        //allowNull:false
     },
     estado:{
         type:DataTypes.STRING
     },
     cantidad_ven:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        //allowNull:false
     },
     idproducto:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        //allowNull:false
     },
     idsucursal:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        //allowNull:false
     }
 },{
     tableName:"Inventario",

@@ -16,27 +16,40 @@ routes.post('/login/', async (req, res) => {
         console.log(req.body)
         const { nick, password } = req.body;
     
-        console.log(md5(password));
+        //console.log(md5(password));
 
-        const usuario = await database.query(`select * from usuario where nick = '${nick}' and password = '${md5(password)}'`)
+        let rsusuario = await database.query(`select * from usuario where nick = '${nick}' and password = '${md5(password)}'`,
+            {
+                model: usuario,
+                mapToModel: true // pass true here if you have any mapped fields
+            });
+        
+        //console.log(rsusuario);
+        //console.log(rsusuario.length);
 
-        if (usuario) {
-            jwt.sign({ usuario }, process.env.CLAVESECRETA
+        if (rsusuario.length!=0) {
+
+            jwt.sign({ rsusuario }, process.env.CLAVESECRETA
                 , { expiresIn: '12h' }//Para personalizar el tiempo para expirar
                 , (err, token) => {
                     return res.json({
+                        "error":"false",
                         token,
-                        body: usuario
+                        body: rsusuario[0]
                     });
                 });
+
         } else {
-            return res.send("Usuario no existe")
+            return res.status(400).json(
+                {"error":"true",
+                "mensaje":"Usuario no existe"}
+            );
         }
-
-
-
     } catch (error) {
-        return res.send("Error de Login")
+        return res.status(400).json(
+            {"error":"true",
+            "mensaje":"Error de login"}
+        );
     }
 })
 
