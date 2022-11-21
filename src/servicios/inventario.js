@@ -19,27 +19,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
-        } else {
-            res.json({
-                mensaje: "successfully",
-                authData: authData,
-                body: inventarios
-            })
-        }
-    })
-})
-
-routes.get('/get/:idinventario', verificaToken, async (req, res) => {
-    const inventarios = await inventario.findByPk(req.params.idinventario, {
-        include: [
-            { model: sucursal },
-            { model: producto }
-        ]
-    })
-    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-        if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error"});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -50,11 +30,59 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
     })
 });
 
-routes.get('/getidproducto/:idproducto', verificaToken, async (req, res) => {
 
-    const query = `select * from inventario where idproducto = '${req.params.idproducto}' and estado ='AC'`;
+routes.get('/getinvsuc/:idsucursal', verificaToken, async (req, res) => {
+    try {
+        const inventarios = await inventario.findAll({ where: { idsucursal: req.params.idsucursal },
+            include: [
+                { model: sucursal },
+                { model: producto }
+            ]
+        })
+    
+        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
+            if (err) {
+                res.json({error: "Error"});
+            } else {
+                res.json({
+                    mensaje: "successfully",
+                    authData: authData,
+                    body: inventarios
+                }) 
+            }
+        })
+    } catch (error) {
+        res.json({error: "Error"});
+        
+    }
+});
 
-    console.log(query);
+routes.get('/get/:idinventario', verificaToken, async (req, res) => {
+    const inventarios = await inventario.findByPk(req.params.idinventario, {
+        include: [
+            { model: sucursal },
+            { model: producto }
+        ]
+    })
+    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
+        if (err) {
+            res.json({error: "Error"});
+        } else {
+            res.json({
+                mensaje: "successfully",
+                authData: authData,
+                body: inventarios
+            })
+        }
+    })
+});
+
+routes.get('/getidproducto/:idproducto-:idsucursal', verificaToken, async (req, res) => {
+
+    try {
+        const query = `select * from inventario where idproducto = ${req.params.idproducto} and idsucursal= ${req.params.idsucursal} and estado ='AC'`;
+
+    //console.log(query);
 
     const inventarios = await database.query(query,
         {
@@ -73,7 +101,7 @@ routes.get('/getidproducto/:idproducto', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error"});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -81,7 +109,10 @@ routes.get('/getidproducto/:idproducto', verificaToken, async (req, res) => {
                 body: inventarios
             })
         }
-    })
+    });
+    } catch (error) {
+        res.json({error: "Error"});
+    }
 });
 
 routes.get('/getDet/', verificaToken, async (req, res) => {
@@ -95,7 +126,7 @@ routes.get('/getDet/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error"});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -116,7 +147,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const inventarios = await inventario.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -128,7 +159,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         })
     } catch (error) {
         t.rollback();
-        return res.send("Error: ", err)
+        res.json({error: "Error"});
     }
 
 })
@@ -144,7 +175,7 @@ routes.put('/put/:idinventario', verificaToken, async (req, res) => {
         const inventarios = await inventario.update(req.body, { where: { idinventario: req.params.idinventario }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -156,7 +187,7 @@ routes.put('/put/:idinventario', verificaToken, async (req, res) => {
         })
     } catch (error) {
         t.rollback();
-        return res.send("Error: ", err)
+        res.json({error: "Error"});
     }
 
 });
@@ -178,7 +209,7 @@ routes.put('/inactiva/:idinventario', verificaToken, async (req, res) => {
 
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -189,7 +220,7 @@ routes.put('/inactiva/:idinventario', verificaToken, async (req, res) => {
         })
     } catch (error) {
         t.rollback();
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
     }
 })
 
@@ -200,7 +231,7 @@ routes.delete('/del/:idinventario', verificaToken, async (req, res) => {
         const inventarios = await inventario.destroy({ where: { idinventario: req.params.idinventario }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 res.json({
                     mensaje: "Registro eliminado",
@@ -210,7 +241,7 @@ routes.delete('/del/:idinventario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 

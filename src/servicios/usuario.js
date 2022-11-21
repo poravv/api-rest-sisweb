@@ -23,6 +23,8 @@ routes.post('/login/', async (req, res) => {
                 model: usuario,
                 mapToModel: true // pass true here if you have any mapped fields
             });
+
+        await database.query('CALL cargaInventarioCab(@a)');
         
         //console.log(rsusuario);
         //console.log(rsusuario.length);
@@ -63,7 +65,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -85,7 +87,7 @@ routes.get('/get/:idusuario', verificaToken, async (req, res) => {
     })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -102,7 +104,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const usuarios = await usuario.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -113,7 +115,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -125,7 +127,7 @@ routes.put('/put/:idusuario', verificaToken, async (req, res) => {
         const usuarios = await usuario.update(req.body, { where: { idusuario: req.params.idusuario }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -136,7 +138,7 @@ routes.put('/put/:idusuario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -148,7 +150,7 @@ routes.delete('/del/:idusuario', verificaToken, async (req, res) => {
         const usuarios = await usuario.destroy({ where: { idusuario: req.params.idusuario }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -159,7 +161,7 @@ routes.delete('/del/:idusuario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })

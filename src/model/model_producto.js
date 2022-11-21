@@ -27,7 +27,6 @@ const producto=database.define("producto",{
     },
     fecha_insert:{
         type:DataTypes.DATE,
-        allowNull:false
     },
     fecha_upd:{
         type:DataTypes.DATE,

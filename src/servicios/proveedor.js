@@ -12,7 +12,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error "});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -27,7 +27,7 @@ routes.get('/get/:idproveedor', verificaToken, async (req, res) => {
     const proveedors = await proveedor.findByPk(req.params.idproveedor)
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -44,7 +44,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const proveedors = await proveedor.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -55,7 +55,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -67,7 +67,7 @@ routes.put('/put/:idproveedor', verificaToken, async (req, res) => {
         const proveedors = await proveedor.update(req.body, { where: { idproveedor: req.params.idproveedor }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -78,7 +78,7 @@ routes.put('/put/:idproveedor', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })
@@ -89,7 +89,7 @@ routes.delete('/del/:idproveedor', verificaToken, async (req, res) => {
         const proveedors = await proveedor.destroy({ where: { idproveedor: req.params.idproveedor }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -100,7 +100,7 @@ routes.delete('/del/:idproveedor', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })

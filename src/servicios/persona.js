@@ -12,7 +12,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
     const personas = await persona.findAll({ include: ciudad })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -27,7 +27,7 @@ routes.get('/get/:idpersona', verificaToken, async (req, res) => {
     const personas = await persona.findByPk(req.params.idpersona, { include: ciudad })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -45,7 +45,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const personas = await persona.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -56,7 +56,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -68,7 +68,7 @@ routes.put('/put/:idpersona', verificaToken, async (req, res) => {
         const personas = await persona.update(req.body, { where: { idpersona: req.params.idpersona }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -79,7 +79,7 @@ routes.put('/put/:idpersona', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -91,7 +91,7 @@ routes.delete('/del/:idpersona', verificaToken, async (req, res) => {
         const personas = await persona.destroy({ where: { idpersona: req.params.idpersona }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -102,7 +102,7 @@ routes.delete('/del/:idpersona', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 

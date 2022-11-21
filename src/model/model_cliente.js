@@ -10,7 +10,7 @@ const clientes=sequelize.define("cliente",{
     },
     ruc:{
         type:DataTypes.STRING,
-        allowNull:false
+        allowNull:true
     },
     telefono:{
         type:DataTypes.STRING
@@ -38,6 +38,13 @@ const clientes=sequelize.define("cliente",{
     idciudad:{
         type:DataTypes.INTEGER,
         foreignKey:true
+    },
+    tipo_cli:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+    sexo:{
+        type:DataTypes.STRING
     },
 },{
     tableName:"Cliente",

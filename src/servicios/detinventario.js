@@ -16,7 +16,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error"});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -30,7 +30,8 @@ routes.get('/get/', verificaToken, async (req, res) => {
 routes.get('/get/:idinventario', verificaToken, async (req, res) => {
     try {
 
-        //const det_inventarios = await det_inventario.findByPk(req.params.idinventario);
+        if(req.params.idinventario){
+            //const det_inventarios = await det_inventario.findByPk(req.params.idinventario);
         const query = `select * from det_inventario where idinventario = ${req.params.idinventario} and estado ='AC'`;
         const det_inventarios = await database.query(query,
             {
@@ -42,7 +43,7 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
 
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) { 
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 res.json({
                     mensaje: "successfully",
@@ -51,8 +52,12 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
                 })
             }
         })
+        }else{
+            res.send("Error idinventario null")
+        }
+        
     } catch (error) {
-        return res.send("Error: ", err)
+        res.json({error: "Error"});
     }
 })
 
@@ -62,7 +67,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const det_inventarios = await det_inventario.create(req.body, { transaction: t });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -75,7 +80,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
     } catch (error) {
         console.log('Error catch', error);
         t.rollback();
-        return res.send("Error: ", err)
+        res.json({error: "Error"});
     }
 
 }) 
@@ -88,7 +93,7 @@ routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -99,7 +104,7 @@ routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })
@@ -121,7 +126,7 @@ routes.put('/inactiva/:iddet_inventario', verificaToken, async (req, res) => {
 
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -133,13 +138,9 @@ routes.put('/inactiva/:iddet_inventario', verificaToken, async (req, res) => {
         })
     } catch (error) {
         t.rollback();
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
     }
-})
-
-
-
-
+});
 
 routes.delete('/del/:iddet_inventario', verificaToken, async (req, res) => {
     const t = await database.transaction();
@@ -149,7 +150,7 @@ routes.delete('/del/:iddet_inventario', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -160,7 +161,7 @@ routes.delete('/del/:iddet_inventario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 

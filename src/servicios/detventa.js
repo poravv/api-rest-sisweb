@@ -3,7 +3,6 @@ const routes = express.Router();
 const jwt = require("jsonwebtoken");
 const det_venta = require("../model/model_detventa")
 const venta = require("../model/model_venta")
-const inventario = require("../model/model_inventario")
 const verificaToken = require('../middleware/token_extractor')
 const database = require('../database')
 require("dotenv").config()
@@ -11,8 +10,7 @@ require("dotenv").config()
 routes.get('/get/',verificaToken, async (req, res) => {
     const det_ventas = await det_venta.findAll({
         include:[
-            {model:venta},
-            {model:inventario}
+            {model:venta}
         ]
     })
     
@@ -29,13 +27,15 @@ routes.get('/get/',verificaToken, async (req, res) => {
     })
 })
 
-routes.get('/get/:iddet_venta',verificaToken, async (req, res) => {
-    const det_ventas = await det_venta.findByPk(req.params.iddet_venta,{
+routes.get('/get/:idventa',verificaToken, async (req, res) => {
+    const det_ventas = await det_venta.findAll({ where: { idventa: req.params.idventa }},{
         include:[
             {model:venta},
-            {model:inventario}
         ]
-    })
+    });
+    
+    //console.log(det_ventas);
+
     jwt.verify(req.token,process.env.CLAVESECRETA,(err,authData)=>{
         if(err){
             return res.send("Error: ",err)
@@ -53,8 +53,6 @@ routes.get('/getDet/',verificaToken, async (req, res) => {
     const det_ventas = await det_venta.findAll({
         include:[
             {model:venta},
-            {model:inventario},
-            //{model:detdet_venta},
         ]
     })
     jwt.verify(req.token,process.env.CLAVESECRETA,(err,authData)=>{
@@ -89,7 +87,7 @@ routes.post('/post/',verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
     
@@ -109,7 +107,7 @@ routes.put('/put/:iddet_venta',verificaToken, async (req, res) => {
             })
         })    
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })
@@ -129,7 +127,7 @@ routes.delete('/del/:iddet_venta',verificaToken, async (req, res) => {
             })
         })   
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })

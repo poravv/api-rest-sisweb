@@ -12,7 +12,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
     const recetas = await receta.findAll({ include: producto_final })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -27,7 +27,7 @@ routes.get('/get/:idreceta', verificaToken, async (req, res) => {
     const recetas = await receta.findByPk(req.params.idreceta, { include: producto_final })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -45,7 +45,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const recetas = await receta.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -56,7 +56,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -68,7 +68,7 @@ routes.put('/put/:idreceta', verificaToken, async (req, res) => {
         const recetas = await receta.update(req.body, { where: { idreceta: req.params.idreceta }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -79,7 +79,7 @@ routes.put('/put/:idreceta', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -91,7 +91,7 @@ routes.delete('/del/:idreceta', verificaToken, async (req, res) => {
         const recetas = await receta.destroy({ where: { idreceta: req.params.idreceta }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -102,7 +102,7 @@ routes.delete('/del/:idreceta', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 

@@ -12,7 +12,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -27,7 +27,7 @@ routes.get('/get/:idpreg_seguridad', verificaToken, async (req, res) => {
     const preg_seguridads = await preg_seguridad.findByPk(req.params.idpreg_seguridad, { include: usuario })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -44,7 +44,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const preg_seguridads = await preg_seguridad.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -55,7 +55,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })
@@ -66,7 +66,7 @@ routes.put('/put/:idpreg_seguridad', verificaToken, async (req, res) => {
         const preg_seguridads = await preg_seguridad.update(req.body, { where: { idpreg_seguridad: req.params.idpreg_seguridad }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -77,7 +77,7 @@ routes.put('/put/:idpreg_seguridad', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -89,7 +89,7 @@ routes.delete('/del/:idpreg_seguridad', verificaToken, async (req, res) => {
         const preg_seguridads = await preg_seguridad.destroy({ where: { idpreg_seguridad: req.params.idpreg_seguridad }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -100,7 +100,7 @@ routes.delete('/del/:idpreg_seguridad', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })

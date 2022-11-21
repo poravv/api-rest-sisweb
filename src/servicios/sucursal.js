@@ -11,7 +11,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
     const sucursales = await sucursal.findAll({ include: ciudad })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -26,7 +26,7 @@ routes.get('/get/:idsucursal', verificaToken, async (req, res) => {
     const sucursales = await sucursal.findByPk(req.params.idsucursal, { include: ciudad })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -43,7 +43,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const sucursales = await sucursal.create(req.body, { transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -54,7 +54,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -66,7 +66,7 @@ routes.put('/put/:idsucursal', verificaToken, async (req, res) => {
         const sucursales = await sucursal.update(req.body, { where: { idsucursal: req.params.idsucursal }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -77,7 +77,7 @@ routes.put('/put/:idsucursal', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })
@@ -88,7 +88,7 @@ routes.delete('/del/:idsucursal', verificaToken, async (req, res) => {
         const sucursales = await sucursal.destroy({ where: { idsucursal: req.params.idsucursal }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -99,7 +99,7 @@ routes.delete('/del/:idsucursal', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })

@@ -15,17 +15,17 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error"});
         } else {
             res.json({
                 mensaje: "successfully",
                 authData: authData,
                 body: productos
             })
-        } 
+        }
     }) 
    }catch(e){
-        return console.log(e) 
+        console.log(e)
    }
 
 })
@@ -34,7 +34,7 @@ routes.get('/get/:idproducto', verificaToken, async (req, res) => {
     const productos = await producto.findByPk(req.params.idproducto, { include: proveedor })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error"});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -52,9 +52,10 @@ routes.post('/post/', verificaToken, async (req, res) => {
     //const t = await database.transaction();
     try {
         const productos = await producto.create(req.body)
+        await database.query('CALL cargaInventarioCab(@a)');
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 //t.commit();
                 res.json({ 
@@ -66,7 +67,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         })
     } catch (error) {
         //t.rollback();
-        return res.send("Error: ", error)
+        return res.json({error: "error catch"});
     }
 
 })
@@ -83,7 +84,7 @@ routes.put('/put/:idproducto', verificaToken, async (req, res) => {
         const productos = await producto.update(req.body, { where: { idproducto: req.params.idproducto }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 t.commit();
                 res.json({
@@ -94,7 +95,7 @@ routes.put('/put/:idproducto', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 
@@ -106,7 +107,7 @@ routes.delete('/del/:idproducto', verificaToken, async (req, res) => {
         const productos = await producto.destroy({ where: { idproducto: req.params.idproducto }, transaction: t })
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error"});
             } else {
                 res.json({
                     mensaje: "Registro eliminado",
@@ -116,7 +117,7 @@ routes.delete('/del/:idproducto', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 

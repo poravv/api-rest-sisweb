@@ -13,7 +13,7 @@ routes.get('/getsql/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err)
+            res.json({error: "Error ",err});
         } else {
             res.json({
                 mensaje: "successfully",
@@ -31,7 +31,7 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err);
+            res.json({error: "Error ",err});;
         } else {
             
             res.json({
@@ -48,7 +48,7 @@ routes.get('/get/:idciudad', verificaToken, async (req, res) => {
     const ciudades = await ciudad.findByPk(req.params.idciudad)
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
-            return res.send("Error: ", err);
+            res.json({error: "Error ",err});;
         } else {
             
             res.json({
@@ -71,7 +71,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 console.log('Commitea')
@@ -83,7 +83,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         console.log('Rollback')
         t.rollback();
     }
@@ -98,7 +98,7 @@ routes.put('/put/:idciudad', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err)
+                res.json({error: "Error ",err});
             } else {
                 t.commit();
                 res.json({
@@ -109,7 +109,7 @@ routes.put('/put/:idciudad', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         console.log('Rollback update')
         t.rollback();
     }
@@ -125,7 +125,7 @@ routes.delete('/del/:idciudad', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                return res.send("Error: ", err);
+                res.json({error: "Error ",err});;
             } else {
                 t.commit();
                 res.json({
@@ -136,7 +136,7 @@ routes.delete('/del/:idciudad', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
 })

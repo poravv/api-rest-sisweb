@@ -8,21 +8,24 @@ const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
 
 routes.get('/get/',verificaToken, async (req, res) => {
-    const clientes = await cliente.findAll({include: ciudad},{
-        transaction:t
-    })
+    
+    try {
+        const clientes = await cliente.findAll({include: ciudad});
     
     jwt.verify(req.token,process.env.CLAVESECRETA,(err,authData)=>{
         if(err){
             return res.send("Error: ",err)
-        }else{ 
+        }else{
             res.json({
                 mensaje:"successfully",
                 authData:authData,
                 body:clientes
             })
         }  
-    })
+    });
+    } catch (error) {
+        console.log('Error: ',error)
+    }
 })
 
 routes.get('/get/:idcliente',verificaToken, async (req, res) => {
@@ -57,7 +60,9 @@ routes.post('/post/',verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({
+            error:"Error en el registro",
+        })
         t.rollback();
     }
     
@@ -83,7 +88,7 @@ routes.put('/put/:idcliente',verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
     
@@ -108,7 +113,7 @@ routes.delete('/del/:idcliente',verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.send("Error: ", error)
+        res.json({error: "error catch"});
         t.rollback();
     }
     
