@@ -1,6 +1,6 @@
 const{DataTypes}=require("sequelize")
 const sequelize=require("../database")
-const venta = require("../model/model_venta")
+const producto_final=require("./model_producto_final")
 
 const det_venta=sequelize.define("det_venta",{
     idventa:{
@@ -32,10 +32,9 @@ const det_venta=sequelize.define("det_venta",{
     timestamps:false
 })
 
-
-det_venta.hasOne(venta,{
-    foreignKey:"idventa",
-    sourceKey:"idventa"
+det_venta.hasOne(producto_final,{
+    foreignKey:"idproducto_final",
+    sourceKey:"idproducto_final"
 })
 
 module.exports=det_venta

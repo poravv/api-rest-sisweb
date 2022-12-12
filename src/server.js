@@ -32,6 +32,7 @@ connect()
 
 
 app.use(express.urlencoded({extended : false}))
+app.use(express.json({limit: '50mb',extended: true, parameterLimit:500000}));
 app.use(express.json())
 app.use(configrutas)
 

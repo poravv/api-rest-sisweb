@@ -13,7 +13,8 @@ routes.get('/get/', verificaToken, async (req, res) => {
     const inventarios = await inventario.findAll({
         include: [
             { model: sucursal },
-            { model: producto }
+            { model: producto },
+            { model: detinventario },
         ]
     })
 
@@ -36,7 +37,8 @@ routes.get('/getinvsuc/:idsucursal', verificaToken, async (req, res) => {
         const inventarios = await inventario.findAll({ where: { idsucursal: req.params.idsucursal },
             include: [
                 { model: sucursal },
-                { model: producto }
+                { model: producto },
+                { model: detinventario },
             ]
         })
     
@@ -61,7 +63,8 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
     const inventarios = await inventario.findByPk(req.params.idinventario, {
         include: [
             { model: sucursal },
-            { model: producto }
+            { model: producto },
+            { model: detinventario },
         ]
     })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {

@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const venta = require("../model/model_venta")
 const usuario = require("../model/model_usuario")
 const cliente = require("../model/model_cliente")
-//const detventa = require("../model/model_detventa")
+const detventa = require("../model/model_detventa")
+const producto_final = require("../model/model_producto_final")
 const database = require('../database');
 const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
@@ -13,7 +14,8 @@ routes.get('/get/', verificaToken, async (req, res) => {
     const ventas = await venta.findAll({
         include: [
             { model: usuario },
-            { model: cliente }
+            { model: cliente },
+            { model: detventa , include:[{ model:producto_final }]},
         ]
     })
 
@@ -35,7 +37,8 @@ routes.get('/getvenusu/:idusuario', verificaToken, async (req, res) => {
         const ventas = await venta.findAll({where: { idusuario: req.params.idusuario },
             include: [
                 { model: usuario },
-                { model: cliente }
+                { model: cliente },
+                { model: detventa , include:[{ model:producto_final }]},
             ]
         })
     
@@ -109,7 +112,8 @@ routes.get('/get/:idventa', verificaToken, async (req, res) => {
     const ventas = await venta.findByPk(req.params.idventa, {
         include: [
             { model: usuario },
-            { model: cliente }
+            { model: cliente },
+            { model: detventa , include:[{ model:producto_final }]},
         ]
     })
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
@@ -130,7 +134,7 @@ routes.get('/getDet/', verificaToken, async (req, res) => {
         include: [
             { model: usuario },
             { model: cliente },
-            //{model:detventa},
+            { model:detventa , include:[{ model:producto_final }]},
         ]
     })
 

@@ -8,42 +8,12 @@ const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
 
 routes.get('/get/', verificaToken, async (req, res) => {
-    const det_inventarios = await det_inventario.findAll({
-        include: [
-            { model: inventario }
-        ]
-    })
-
-    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-        if (err) {
-            res.json({error: "Error"});
-        } else {
-            res.json({
-                mensaje: "successfully",
-                authData: authData,
-                body: det_inventarios
-            })
-        }
-    })
-})
-
-routes.get('/get/:idinventario', verificaToken, async (req, res) => {
     try {
-
-        if(req.params.idinventario){
-            //const det_inventarios = await det_inventario.findByPk(req.params.idinventario);
-        const query = `select * from det_inventario where idinventario = ${req.params.idinventario} and estado ='AC'`;
-        const det_inventarios = await database.query(query,
-            {
-                model: det_inventario,
-                mapToModel: true // pass true here if you have any mapped fields
-            });
-        
-        //console.log(det_inventarios);
+        const det_inventarios = await det_inventario.findAll({});
 
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) { 
-                res.json({error: "Error"});
+            if (err) {
+                res.json({ error: "Error" });
             } else {
                 res.json({
                     mensaje: "successfully",
@@ -52,12 +22,43 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
                 })
             }
         })
-        }else{
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Error" });
+    }
+});
+
+routes.get('/get/:idinventario', verificaToken, async (req, res) => {
+    try {
+
+        if (req.params.idinventario) {
+            //const det_inventarios = await det_inventario.findByPk(req.params.idinventario);
+            const query = `select * from det_inventario where idinventario = ${req.params.idinventario} and estado ='AC'`;
+            const det_inventarios = await database.query(query,
+                {
+                    model: det_inventario,
+                    mapToModel: true // pass true here if you have any mapped fields
+                });
+
+            //console.log(det_inventarios);
+
+            jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
+                if (err) {
+                    res.json({ error: "Error" });
+                } else {
+                    res.json({
+                        mensaje: "successfully",
+                        authData: authData,
+                        body: det_inventarios
+                    })
+                }
+            })
+        } else {
             res.send("Error idinventario null")
         }
-        
+
     } catch (error) {
-        res.json({error: "Error"});
+        res.json({ error: "Error" });
     }
 })
 
@@ -67,7 +68,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
         const det_inventarios = await det_inventario.create(req.body, { transaction: t });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                res.json({error: "Error"});
+                res.json({ error: "Error" });
             } else {
                 t.commit();
                 res.json({
@@ -78,12 +79,12 @@ routes.post('/post/', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('Error catch', error);
+        //console.log('Error catch', error);
         t.rollback();
-        res.json({error: "Error"});
+        res.json({ error: "Error" });
     }
 
-}) 
+})
 
 routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
     const t = await database.transaction();
@@ -93,7 +94,7 @@ routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                res.json({error: "Error"});
+                res.json({ error: "Error" });
             } else {
                 t.commit();
                 res.json({
@@ -104,7 +105,7 @@ routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.json({error: "error catch"});
+        res.json({ error: "error catch" });
         t.rollback();
     }
 })
@@ -113,20 +114,20 @@ routes.put('/inactiva/:iddet_inventario', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         //Captura parametro 
-        const { cantidad,idinventario,estado } = req.body;
+        const { cantidad, idinventario, estado } = req.body;
         //Query de actualizacion de cabecera
         const query = `update inventario set cantidad_total=(cantidad_total - ${cantidad})  where idinventario = ${idinventario}`;
         await database.query(query, {
             transaction: t
         });
         //Inactivacion de detalle
-        const det_inventarios = await det_inventario.update({estado}, { where: { iddet_inventario: req.params.iddet_inventario } }, {
+        const det_inventarios = await det_inventario.update({ estado }, { where: { iddet_inventario: req.params.iddet_inventario } }, {
             transaction: t
         });
 
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                res.json({error: "Error"});
+                res.json({ error: "Error" });
             } else {
                 t.commit();
                 res.json({
@@ -138,7 +139,7 @@ routes.put('/inactiva/:iddet_inventario', verificaToken, async (req, res) => {
         })
     } catch (error) {
         t.rollback();
-        res.json({error: "error catch"});
+        res.json({ error: "error catch" });
     }
 });
 
@@ -150,7 +151,7 @@ routes.delete('/del/:iddet_inventario', verificaToken, async (req, res) => {
         });
         jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
             if (err) {
-                res.json({error: "Error"});
+                res.json({ error: "Error" });
             } else {
                 t.commit();
                 res.json({
@@ -161,7 +162,7 @@ routes.delete('/del/:iddet_inventario', verificaToken, async (req, res) => {
             }
         })
     } catch (error) {
-        res.json({error: "error catch"});
+        res.json({ error: "error catch" });
         t.rollback();
     }
 

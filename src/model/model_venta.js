@@ -2,6 +2,7 @@ const{DataTypes}=require("sequelize")
 const sequelize=require("../database")
 const cliente=require("./model_cliente")
 const usuario=require("./model_usuario")
+const det_venta=require("./model_detventa")
 
 const venta=sequelize.define("ventas",{
     idventa:{
@@ -50,6 +51,11 @@ venta.hasOne(cliente,{
 venta.hasOne(usuario,{
     foreignKey:"idusuario",
     sourceKey:"idusuario"
+})
+
+venta.hasMany(det_venta,{
+    foreignKey:"idventa",
+    sourceKey:"idventa"
 })
 
 

@@ -1,6 +1,6 @@
 const DataType = require('sequelize')
 const database = require('../database.js')
-const producto_final=require("./model_producto_final")
+//const producto_final=require("./model_producto_final")
 const producto=require("./model_producto")
 
 
@@ -32,10 +32,12 @@ const receta = database.define("receta",{
     timestamps:false
 })
 
+/*
 receta.hasOne(producto_final,{
     foreignKey:"idproducto_final",
     primaryKey:"idproducto_final"
 })
+*/
 
 receta.hasOne(producto,{
     foreignKey:"idproducto",

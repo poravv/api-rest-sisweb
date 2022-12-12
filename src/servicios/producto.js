@@ -47,7 +47,7 @@ routes.get('/get/:idproducto', verificaToken, async (req, res) => {
 
 routes.post('/post/', verificaToken, async (req, res) => {
     
-    console.log(req.body);
+    //console.log(req.body);
     
     //const t = await database.transaction();
     try {
@@ -74,9 +74,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
 
 routes.put('/put/:idproducto', verificaToken, async (req, res) => {
 
-    console.log(req.body)
-
-    
+    //console.log(req.body)
     try {
         
         const t = await database.transaction();
@@ -96,7 +94,7 @@ routes.put('/put/:idproducto', verificaToken, async (req, res) => {
         })
     } catch (error) {
         res.json({error: "error catch"});
-        t.rollback();
+        //t.rollback();
     }
 
 })

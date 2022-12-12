@@ -2,17 +2,13 @@ const express = require('express');
 const routes = express.Router();
 const jwt = require("jsonwebtoken");
 const det_venta = require("../model/model_detventa")
-const venta = require("../model/model_venta")
 const verificaToken = require('../middleware/token_extractor')
 const database = require('../database')
 require("dotenv").config()
 
 routes.get('/get/',verificaToken, async (req, res) => {
-    const det_ventas = await det_venta.findAll({
-        include:[
-            {model:venta}
-        ]
-    })
+    try {
+        const det_ventas = await det_venta.findAll()
     
     jwt.verify(req.token,process.env.CLAVESECRETA,(err,authData)=>{
         if(err){
@@ -25,13 +21,16 @@ routes.get('/get/',verificaToken, async (req, res) => {
             })
         }
     })
+    } catch (error) {
+        return res.send("Error: ",error)
+    }
 })
 
 routes.get('/get/:idventa',verificaToken, async (req, res) => {
     const det_ventas = await det_venta.findAll({ where: { idventa: req.params.idventa }},{
-        include:[
-            {model:venta},
-        ]
+        //include:[
+        //    {model:venta},
+        //]
     });
     
     //console.log(det_ventas);
@@ -50,11 +49,7 @@ routes.get('/get/:idventa',verificaToken, async (req, res) => {
 })
 
 routes.get('/getDet/',verificaToken, async (req, res) => {
-    const det_ventas = await det_venta.findAll({
-        include:[
-            {model:venta},
-        ]
-    })
+    const det_ventas = await det_venta.findAll()
     jwt.verify(req.token,process.env.CLAVESECRETA,(err,authData)=>{
         if(err){
             return res.send("Error: ",err)

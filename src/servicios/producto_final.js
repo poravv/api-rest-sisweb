@@ -2,6 +2,7 @@ const express = require('express');
 const routes = express.Router();
 const jwt = require("jsonwebtoken");
 const producto_final = require("../model/model_producto_final")
+const receta = require("../model/model_receta")
 const database = require('../database')
 const{DataTypes}=require("sequelize")
 const verificaToken = require('../middleware/token_extractor')
@@ -52,7 +53,11 @@ routes.get('/productoventa/:idsucursal', verificaToken, async (req, res) => {
 routes.get('/get/', verificaToken, async (req, res) => {
     
     try {
-        const producto_finales = await producto_final.findAll();
+        const producto_finales = await producto_final.findAll({
+            include: [
+                { model: receta },
+            ]
+        });
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
         if (err) {
