@@ -39,7 +39,8 @@ const producto_final = database.define("producto_final",{
 
 producto_final.hasMany(receta,{
     foreignKey:"idproducto_final",
-    sourceKey:"idproducto_final"
+    sourceKey:"idproducto_final",
+    primaryKey:"idproducto_final"
 });
 
 

@@ -46,6 +46,16 @@ const clientes=sequelize.define("cliente",{
     sexo:{
         type:DataTypes.STRING
     },
+    fecha_insert:{
+        type:DataTypes.DATE
+    },
+    fecha_upd:{
+        type:DataTypes.DATE
+    },
+    idusuario_upd:{
+        type:DataTypes.INTEGER,
+        foreignKey:true
+    },
 },{
     tableName:"Cliente",
     timestamps:false
@@ -53,7 +63,8 @@ const clientes=sequelize.define("cliente",{
 
 clientes.hasOne(ciudad,{
     foreignKey:"idciudad",
-    sourceKey:"idciudad"
+    sourceKey:"idciudad",
+    primaryKey:"idciudad",
 })
 
 

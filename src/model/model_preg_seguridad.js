@@ -26,7 +26,8 @@ const preg_seguridad=sequelize.define("preg_seguridad",{
 
 preg_seguridad.hasOne(usuario,{
     foreignKey:"idusuario",
-    sourceKey:"idusuario"
+    sourceKey:"idusuario",
+    primaryKey:"idusuario"
 })
 
 

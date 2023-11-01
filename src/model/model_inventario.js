@@ -36,17 +36,20 @@ const inventario=sequelize.define("inventario",{
 
 inventario.hasOne(producto,{
     foreignKey:"idproducto",
-    sourceKey:"idproducto"
+    sourceKey:"idproducto",
+    primaryKey:"idproducto",
 })
 
 inventario.hasOne(sucursal,{
     foreignKey:"idsucursal",
-    sourceKey:"idsucursal"
+    sourceKey:"idsucursal",
+    primaryKey:"idsucursal",
 })
 
 inventario.hasMany(detinventario,{
     foreignKey:"idinventario",
-    sourceKey:"idinventario"
+    sourceKey:"idinventario",
+    primaryKey:"idinventario",
 })
 
 module.exports=inventario

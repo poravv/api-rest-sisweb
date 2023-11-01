@@ -10,13 +10,12 @@ require("dotenv").config()
 
 routes.get('/get/', verificaToken, async (req, res) => {
     const recetas = await receta.findAll({ include: producto_final })
-    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-        if (err) {
-            res.json({error: "Error ",err});
+    jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+        if (error) {
+            res.json({ estado: "error", mensaje: error })
         } else {
             res.json({
-                mensaje: "successfully",
-                authData: authData,
+                estado: "successfully",
                 body: recetas
             })
         }
@@ -25,13 +24,12 @@ routes.get('/get/', verificaToken, async (req, res) => {
 
 routes.get('/get/:idreceta', verificaToken, async (req, res) => {
     const recetas = await receta.findByPk(req.params.idreceta, { include: producto_final })
-    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-        if (err) {
-            res.json({error: "Error ",err});
+    jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+        if (error) {
+            res.json({ estado: "error", mensaje: error })
         } else {
             res.json({
-                mensaje: "successfully",
-                authData: authData,
+                estado: "successfully",
                 body: recetas
             })
         }
@@ -40,23 +38,23 @@ routes.get('/get/:idreceta', verificaToken, async (req, res) => {
 
 routes.post('/post/', verificaToken, async (req, res) => {
     const t = await database.transaction();
-
+    console.log('Entra en receta-----------------------------------------------')
     try {
         const recetas = await receta.create(req.body, { transaction: t })
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({error: "Error ",err});
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 t.commit();
                 res.json({
-                    mensaje: "Registro almacenado",
-                    authData: authData,
+                    estado: "successfully",
+                    mensaje: "Registro almacenado correctamente",
                     body: recetas
                 })
             }
         })
     } catch (error) {
-        res.json({error: "error catch"});
+        res.json({ estado: "error", mensaje: error })
         t.rollback();
     }
 
@@ -66,20 +64,20 @@ routes.put('/put/:idreceta', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         const recetas = await receta.update(req.body, { where: { idreceta: req.params.idreceta }, transaction: t })
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({error: "Error ",err});
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 t.commit();
                 res.json({
-                    mensaje: "Registro actualizado",
-                    authData: authData,
+                    estado: "successfully",
+                    mensaje: "Registro actualizado correctamente",
                     body: recetas
                 })
             }
         })
     } catch (error) {
-        res.json({error: "error catch"});
+        res.json({ estado: "error", mensaje: error })
         t.rollback();
     }
 
@@ -89,20 +87,20 @@ routes.delete('/del/:idreceta', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         const recetas = await receta.destroy({ where: { idreceta: req.params.idreceta }, transaction: t })
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({error: "Error ",err});
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro eliminado",
-                    authData: authData,
                     body: recetas
                 })
             }
         })
     } catch (error) {
-        res.json({error: "error catch"});
+        res.json({ estado: "error", mensaje: error })
         t.rollback();
     }
 

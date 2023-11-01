@@ -10,66 +10,43 @@ const md5 = require('md5')
 require("dotenv").config()
 
 routes.post('/login/', async (req, res) => {
-
     //console.log(`select * from usuario where nick = '${nick}' and password = '${md5(password)}'`)
     try {
-        console.log(req.body)
+        //console.log(req.body)
         const { nick, password } = req.body;
-
-        //console.log(md5(password));
-
-        /*
-        let rsusuario = await database.query(`select * from usuario where nick = '${nick}' and password = '${md5(password)}'`,
+        const rsusuario = await usuario.findOne(
             {
-                model: usuario,
-                mapToModel: true, // pass true here if you have any mapped fields
+                where: { nick: nick, password: md5(password) },
                 include: [
                     { model: sucursal },
                     { model: persona }
                 ]
-
-            }
-        );
-        */
-
-        const rsusuario = await usuario.findOne(
-        {where: { nick: nick,password: md5(password) },
-            include: [
-                { model: sucursal },
-                { model: persona }
-            ]
-        })
-
+            })
         await database.query('CALL cargaInventarioCab(@a)');
-
-        //console.log(rsusuario);
-        //console.log(rsusuario.length);
 
         if (rsusuario.length != 0) {
 
+            console.log('Mi usuario: ', rsusuario)
+
             jwt.sign({ rsusuario }, process.env.CLAVESECRETA
                 , { expiresIn: '12h' }//Para personalizar el tiempo para expirar
-                , (err, token) => {
-                    return res.json({
-                        "error": "false",
-                        token,
-                        body: rsusuario
-                    });
+                , (error, token) => {
+                    res.json({ estado: "succesfully", token, body: rsusuario })
                 });
 
         } else {
             return res.status(400).json(
                 {
-                    "error": "true",
-                    "mensaje": "Usuario no existe"
+                    estado: "error",
+                    mensaje: "Usuario no existe"
                 }
             );
         }
     } catch (error) {
         return res.status(400).json(
             {
-                "error": "true",
-                "mensaje": "Error de login"
+                estado: "error",
+                mensaje: "Error de login"
             }
         );
     }
@@ -83,19 +60,16 @@ routes.get('/get/', verificaToken, async (req, res) => {
         ]
     })
 
-    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-        if (err) {
-            res.json({ error: "Error ", err });
+    jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+        if (error) {
+            res.json({ estado: "error", mensaje: error });
         } else {
             res.json({
-                mensaje: "successfully",
-                authData: authData,
+                estado: "successfully",
                 body: usuarios
             })
         }
     })
-
-    //res.json(usuarios)
 })
 
 routes.get('/get/:idusuario', verificaToken, async (req, res) => {
@@ -105,37 +79,67 @@ routes.get('/get/:idusuario', verificaToken, async (req, res) => {
             { model: persona }
         ]
     })
-    jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-        if (err) {
-            res.json({ error: "Error ", err });
+    jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+        if (error) {
+            res.json({ estado: "error", mensaje: error });
         } else {
             res.json({
-                mensaje: "successfully",
-                authData: authData,
+                estado: "successfully",
                 body: usuarios
             })
         }
     })
 })
 
+
+routes.put('/reset/:idusuario', verificaToken, async (req, res) => {
+    const t = await database.transaction();
+    //console.log(req.body)
+    req.body.password = md5(req.body.password);
+    try {
+        await usuario.update(req.body, { where: { idusuario: req.params.idusuario }, transaction: t }).then((rs) => {
+            //console.log('RS: ', rs)
+            jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+                if (error) {
+                    res.json({ estado: "error", mensaje: error });
+                } else {
+                    t.commit();
+                    res.json({
+                        estado: "successfully",
+                        mensaje: "Usuario actualizado correctamente",
+                        body: rs
+                    })
+                }
+            })
+        });
+
+    } catch (error) {
+        res.json({ estado: "error", mensaje: error });
+        t.rollback();
+    }
+})
+
 routes.post('/post/', verificaToken, async (req, res) => {
     const t = await database.transaction();
+
     try {
-        const usuarios = await usuario.create(req.body, { transaction: t })
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error ", err });
+
+        jwt.verify(req.token, process.env.CLAVESECRETA, async (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error });
             } else {
+                req.body.password = md5(req.body.password);
+                const usuarios = await usuario.create(req.body, { transaction: t })
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro almacenado",
-                    authData: authData,
                     body: usuarios
                 })
             }
         })
     } catch (error) {
-        res.json({ error: "error catch" });
+        res.json({ estado: "error", mensaje: error });
         t.rollback();
     }
 
@@ -145,20 +149,20 @@ routes.put('/put/:idusuario', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         const usuarios = await usuario.update(req.body, { where: { idusuario: req.params.idusuario }, transaction: t })
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error ", err });
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error });
             } else {
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro actualizado",
-                    authData: authData,
                     body: usuarios
                 })
             }
         })
     } catch (error) {
-        res.json({ error: "error catch" });
+        res.json({ estado: "error", mensaje: error });
         t.rollback();
     }
 
@@ -168,20 +172,20 @@ routes.delete('/del/:idusuario', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         const usuarios = await usuario.destroy({ where: { idusuario: req.params.idusuario }, transaction: t })
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error ", err });
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error });
             } else {
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro eliminado",
-                    authData: authData,
                     body: usuarios
                 })
             }
         })
     } catch (error) {
-        res.json({ error: "error catch" });
+        res.json({ estado: "error", mensaje: error });
         t.rollback();
     }
 })

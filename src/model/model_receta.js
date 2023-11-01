@@ -41,7 +41,8 @@ receta.hasOne(producto_final,{
 
 receta.hasOne(producto,{
     foreignKey:"idproducto",
-    primaryKey:"idproducto"
+    primaryKey:"idproducto",
+    sourceKey:"idproducto"
 })
 
 module.exports=receta

@@ -45,17 +45,20 @@ const venta=sequelize.define("ventas",{
 
 venta.hasOne(cliente,{
     foreignKey:"idcliente",
-    sourceKey:"idcliente"
+    sourceKey:"idcliente",
+    primaryKey:"idcliente"
 })
 
 venta.hasOne(usuario,{
     foreignKey:"idusuario",
-    sourceKey:"idusuario"
+    sourceKey:"idusuario",
+    primaryKey:"idusuario"
 })
 
 venta.hasMany(det_venta,{
     foreignKey:"idventa",
-    sourceKey:"idventa"
+    sourceKey:"idventa",
+    primaryKey:"idventa"
 })
 
 

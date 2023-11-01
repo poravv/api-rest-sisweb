@@ -34,7 +34,8 @@ const det_venta=sequelize.define("det_venta",{
 
 det_venta.hasOne(producto_final,{
     foreignKey:"idproducto_final",
-    sourceKey:"idproducto_final"
+    sourceKey:"idproducto_final",
+    primaryKey:"idproducto_final",
 })
 
 module.exports=det_venta

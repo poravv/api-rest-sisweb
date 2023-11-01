@@ -1,65 +1,75 @@
-const DataType = require('sequelize')
+const{DataTypes}=require("sequelize")
 const database = require('../database.js')
 const ciudad=require("./model_ciudad")
 
 const persona = database.define("persona",{
     idpersona:{
-        type:DataType.INTEGER,
+        type:DataTypes.INTEGER,
         primaryKey:true,
         autoIncrement:true
     },
     nombre:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     apellido:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     documento:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     nacimiento:{
-        type:DataType.DATE,
+        type:DataTypes.DATE,
         allowNull:false
     },
     sexo:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false,
     },
     est_civil:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     direccion:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     estado:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     tipo_doc:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     nacionalidad:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     idciudad:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     correo:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     telefono:{
-        type:DataType.STRING,
+        type:DataTypes.STRING,
         allowNull:false
-    }
+    },
+    fecha_insert:{
+        type:DataTypes.DATE
+    },
+    fecha_upd:{
+        type:DataTypes.DATE
+    },
+    idusuario_upd:{
+        type:DataTypes.INTEGER,
+        foreignKey:true
+    },
 },
 {
     tableName:"Persona",
@@ -68,7 +78,8 @@ const persona = database.define("persona",{
 
 persona.hasOne(ciudad,{
     foreignKey:"idciudad",
-    primaryKey:"idciudad"
+    primaryKey:"idciudad",
+    sourceKey:"idciudad"
 })
 
 module.exports=persona

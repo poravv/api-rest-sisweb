@@ -6,7 +6,7 @@ const sucursal=database.define("sucursal",{
     idsucursal:{
         type:DataTypes.INTEGER,
         autoIncrement:true,
-        primaryKey:true
+        primaryKey:true,
     },
     descripcion:{
         type:DataTypes.STRING,
@@ -35,6 +35,8 @@ const sucursal=database.define("sucursal",{
 
 sucursal.hasOne(ciudad,{
     foreignKey:"idciudad",
-    primaryKey:"idciudad"
-})
+    primaryKey:"idciudad",
+    sourceKey:"idciudad",
+});
+
 module.exports=sucursal

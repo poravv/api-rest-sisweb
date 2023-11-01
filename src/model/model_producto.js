@@ -48,7 +48,8 @@ const producto=database.define("producto",{
 
 producto.hasOne(proveedor,{
     foreignKey:"idproveedor",
-    sourceKey:"idproveedor"
+    sourceKey:"idproveedor",
+    primaryKey:"idproveedor"
 })
 
 

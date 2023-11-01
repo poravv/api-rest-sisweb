@@ -41,12 +41,14 @@ const usuario= database.define("usuario",{
 
 usuario.hasOne(sucursal,{
     foreignKey:"idsucursal",
-    primaryKey:"idsucursal"
+    primaryKey:"idsucursal",
+    sourceKey:"idsucursal"
 })
 
 usuario.hasOne(persona,{
     foreignKey:"idpersona",
-    primaryKey:"idpersona"
+    primaryKey:"idpersona",
+    sourceKey:"idpersona"
 })
 
 module.exports=usuario

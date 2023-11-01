@@ -113,7 +113,7 @@ routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
 routes.put('/inactiva/:iddet_inventario', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
-        //Captura parametro 
+        //Captura parametro
         const { cantidad, idinventario, estado } = req.body;
         //Query de actualizacion de cabecera
         const query = `update inventario set cantidad_total=(cantidad_total - ${cantidad})  where idinventario = ${idinventario}`;
