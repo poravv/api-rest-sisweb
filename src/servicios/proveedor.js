@@ -69,14 +69,15 @@ routes.post('/post/', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         jwt.verify(req.token, process.env.CLAVESECRETA, async (error, authData) => {
-            const strFecha = fechaActual.getFullYear() + "-" + (fechaActual.getMonth() + 1) + "-" + fechaActual.getDate();
-            req.body.fecha_insert = strFecha;
-            req.body.fecha_upd = strFecha;
-            req.body.idusuario_upd = authData?.rsusuario?.idusuario;
-            const proveedores = await proveedor.create(req.body, { transaction: t })
+
             if (error) {
                 res.json({ estado: "error", mensaje: error });
             } else {
+                const strFecha = fechaActual.getFullYear() + "-" + (fechaActual.getMonth() + 1) + "-" + fechaActual.getDate();
+                req.body.fecha_insert = strFecha;
+                req.body.fecha_upd = strFecha;
+                req.body.idusuario_upd = authData?.rsusuario?.idusuario;
+                const proveedores = await proveedor.create(req.body, { transaction: t })
                 t.commit();
                 res.json({
                     estado: 'successfully',
@@ -96,13 +97,14 @@ routes.put('/put/:idproveedor', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
         jwt.verify(req.token, process.env.CLAVESECRETA, async (error, authData) => {
-            const strFecha = fechaActual.getFullYear() + "-" + (fechaActual.getMonth() + 1) + "-" + fechaActual.getDate();
-            req.body.fecha_upd = strFecha;
-            req.body.idusuario_upd = authData?.rsusuario?.idusuario;
-            const proveedores = await proveedor.update(req.body, { where: { idproveedor: req.params.idproveedor }, transaction: t })
+
             if (error) {
                 res.json({ estado: "error", mensaje: error });
             } else {
+                const strFecha = fechaActual.getFullYear() + "-" + (fechaActual.getMonth() + 1) + "-" + fechaActual.getDate();
+                req.body.fecha_upd = strFecha;
+                req.body.idusuario_upd = authData?.rsusuario?.idusuario;
+                const proveedores = await proveedor.update(req.body, { where: { idproveedor: req.params.idproveedor }, transaction: t })
                 t.commit();
                 res.json({
                     estado: 'successfully',

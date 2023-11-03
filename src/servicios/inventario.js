@@ -6,8 +6,34 @@ const sucursal = require("../model/model_sucursal")
 const producto = require("../model/model_producto")
 const detinventario = require("../model/model_detinventario")
 const database = require('../database')
-const verificaToken = require('../middleware/token_extractor')
+const verificaToken = require('../middleware/token_extractor');
+const { QueryTypes } = require('sequelize');
 require("dotenv").config()
+
+
+
+
+
+routes.get('/getsql/', verificaToken, async (req, res) => {
+    try {
+
+        jwt.verify(req.token, process.env.CLAVESECRETA, async (error, authData) => {
+
+            if (error) {
+                res.json({ estado: "error", mensaje: error, })
+            } else {
+                const idsucursal = authData?.rsusuario?.idsucursal;
+                const inv_analisis = await database.query(`select * from vw_analisis_inv where idsucursal=${idsucursal}`, { type: QueryTypes.SELECT })
+                res.json({
+                    estado: "successfully",
+                    body: inv_analisis
+                })
+            }
+        })
+    } catch (error) {
+        res.json({ estado: "error", mensaje: error, })
+    }
+})
 
 routes.get('/get/', verificaToken, async (req, res) => {
     const inventarios = await inventario.findAll({
