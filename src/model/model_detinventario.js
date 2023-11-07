@@ -26,6 +26,10 @@ const det_inventario=sequelize.define("det_inventario",{
     fecha_upd:{
         type:DataTypes.DATE,
         //allowNull:false
+    },
+    idusuario_upd:{
+        type:DataTypes.INTEGER,
+        //allowNull:false
     }
 },{
     tableName:"Det_inventario",

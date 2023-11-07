@@ -5,26 +5,26 @@ const det_inventario = require("../model/model_detinventario")
 const inventario = require("../model/model_inventario")
 const database = require('../database')
 const verificaToken = require('../middleware/token_extractor')
+let fechaActual = new Date();
 require("dotenv").config()
 
 routes.get('/get/', verificaToken, async (req, res) => {
     try {
         const det_inventarios = await det_inventario.findAll({});
 
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error" });
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 res.json({
-                    mensaje: "successfully",
-                    authData: authData,
+                    estado: "successfully",
                     body: det_inventarios
                 })
             }
         })
     } catch (error) {
         console.log(error)
-        res.json({ error: "Error" });
+        res.json({ estado: "error", mensaje: error })
     }
 });
 
@@ -42,13 +42,12 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
 
             //console.log(det_inventarios);
 
-            jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-                if (err) {
-                    res.json({ error: "Error" });
+            jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+                if (error) {
+                    res.json({ estado: "error", mensaje: error })
                 } else {
                     res.json({
-                        mensaje: "successfully",
-                        authData: authData,
+                        estado: "successfully",
                         body: det_inventarios
                     })
                 }
@@ -58,22 +57,26 @@ routes.get('/get/:idinventario', verificaToken, async (req, res) => {
         }
 
     } catch (error) {
-        res.json({ error: "Error" });
+        res.json({ estado: "error", mensaje: error })
     }
 })
 
 routes.post('/post/', verificaToken, async (req, res) => {
     const t = await database.transaction();
     try {
-        const det_inventarios = await det_inventario.create(req.body, { transaction: t });
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error" });
+        jwt.verify(req.token, process.env.CLAVESECRETA, async (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
+                const strFecha = fechaActual.getFullYear() + "-" + (fechaActual.getMonth() + 1) + "-" + fechaActual.getDate();
+                req.body.fecha_insert = strFecha;
+                req.body.fecha_upd = strFecha;
+                req.body.idusuario_upd = authData?.rsusuario?.idusuario;
+                const det_inventarios = await det_inventario.create(req.body, { transaction: t });
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro almacenado",
-                    authData: authData,
                     body: det_inventarios
                 })
             }
@@ -81,7 +84,7 @@ routes.post('/post/', verificaToken, async (req, res) => {
     } catch (error) {
         //console.log('Error catch', error);
         t.rollback();
-        res.json({ error: "Error" });
+        res.json({ estado: "error", mensaje: error })
     }
 
 })
@@ -92,20 +95,20 @@ routes.put('/put/:iddet_inventario', verificaToken, async (req, res) => {
         const det_inventarios = await det_inventario.update(req.body, { where: { iddet_inventario: req.params.iddet_inventario } }, {
             transaction: t
         });
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error" });
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro actualizado",
-                    authData: authData,
                     body: det_inventarios
                 })
             }
         })
     } catch (error) {
-        res.json({ error: "error catch" });
+        res.json({ estado: "error", mensaje: error })
         t.rollback();
     }
 })
@@ -125,21 +128,21 @@ routes.put('/inactiva/:iddet_inventario', verificaToken, async (req, res) => {
             transaction: t
         });
 
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error" });
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro actualizado",
-                    authData: authData,
                     body: det_inventarios
                 })
             }
         })
     } catch (error) {
         t.rollback();
-        res.json({ error: "error catch" });
+        res.json({ estado: "error", mensaje: error })
     }
 });
 
@@ -149,20 +152,20 @@ routes.delete('/del/:iddet_inventario', verificaToken, async (req, res) => {
         const det_inventarios = await det_inventario.destroy({ where: { iddet_inventario: req.params.iddet_inventario } }, {
             transaction: t
         });
-        jwt.verify(req.token, process.env.CLAVESECRETA, (err, authData) => {
-            if (err) {
-                res.json({ error: "Error" });
+        jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+            if (error) {
+                res.json({ estado: "error", mensaje: error })
             } else {
                 t.commit();
                 res.json({
+                    estado: "successfully",
                     mensaje: "Registro eliminado",
-                    authData: authData,
                     body: det_inventarios
                 })
             }
         })
     } catch (error) {
-        res.json({ error: "error catch" });
+        res.json({ estado: "error", mensaje: error })
         t.rollback();
     }
 

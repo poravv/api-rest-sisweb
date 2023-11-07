@@ -11,13 +11,37 @@ const verificaToken = require('../middleware/token_extractor')
 require("dotenv").config()
 //let fechaActual = new Date();
 
+routes.get('/getpedidos/', verificaToken, async (req, res) => {
+    const ventas = await venta.findAll({
+        include: [
+            { model: usuario },
+            { model: cliente },
+            { model: detventa, include: [{ model: producto_final }] },
+        ],
+        where: { estado: 'PE' },
+    })
+
+    jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
+        if (error) {
+            res.json({ estado: "error", mensaje: error })
+        } else {
+            res.json({
+                estado: "successfully",
+                body: ventas
+            })
+        }
+    })
+});
+
+
 routes.get('/get/', verificaToken, async (req, res) => {
     const ventas = await venta.findAll({
         include: [
             { model: usuario },
             { model: cliente },
             { model: detventa, include: [{ model: producto_final }] },
-        ]
+        ],
+        where: {estado: 'VE' },
     })
 
     jwt.verify(req.token, process.env.CLAVESECRETA, (error, authData) => {
@@ -40,7 +64,7 @@ routes.get('/getvenusu', verificaToken, async (req, res) => {
             } else {
                 const idusuario = authData?.rsusuario?.idusuario;
                 const ventas = await venta.findAll({
-                    where: { idusuario: idusuario, estado: 'AC' },
+                    where: { idusuario: idusuario, estado: 'VE' },
                     include: [
                         { model: usuario },
                         { model: cliente },

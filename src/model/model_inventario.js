@@ -28,6 +28,10 @@ const inventario=sequelize.define("inventario",{
     idsucursal:{
         type:DataTypes.INTEGER,
         //allowNull:false
+    },
+    notificar:{
+        type:DataTypes.INTEGER,
+        //allowNull:false
     }
 },{
     tableName:"Inventario",
